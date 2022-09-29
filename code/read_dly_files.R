@@ -12,24 +12,14 @@ widths
 
 headers <- c("ID", "YEAR", "MONTH", "ELEMENT", unlist(map(1:31, quadruple)))
 
-archive("write_dir.tar.gz") %>%
-    pull(path) %>%
-    map_dfr(., ~read_tsv(archive_read("write_dir.tar.gz", .x)))
-
-dly_files <- archive("data/ghcnd_all.tar.gz") %>%
-    filter(str_detect(path, "dly")) %>%
-    slice_sample(n = 5) %>%
-    pull(path)
-
 
 ##making composite date from few files
 ##larger files cannot be used in the git hub
-dly_files %>%
-    map_dfr(., ~read_fwf(archive_read("data/ghcnd_all.tar.gz", .x),
+read_fwf("data/ghcnd_cat.gz",
         fwf_widths(widths, headers),
         na = c("NA", "-9999"),
         col_types = cols(.default = col_character()),
-        col_select = c(ID, YEAR, MONTH, ELEMENT, starts_with("VALUE")))) 
+        col_select = c(ID, YEAR, MONTH, ELEMENT, starts_with("VALUE"))) 
         #%>%
     rename_all(tolower) %>%
     filter(element == "PRCP") %>%
