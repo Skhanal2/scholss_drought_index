@@ -1,4 +1,4 @@
-library(tidyverse, help, pos = 2, lib.loc = NULL)
+library(tidyverse)
 library(glue)
 library(lubridate)
 
@@ -12,15 +12,25 @@ widths
 
 headers <- c("ID", "YEAR", "MONTH", "ELEMENT", unlist(map(1:31, quadruple)))
 
-dly_files <- list.files("data/ghcnd_all", full.names = TRUE)
+archive("write_dir.tar.gz") %>%
+    pull(path) %>%
+    map_dfr(., ~read_tsv(archive_read("write_dir.tar.gz", .x)))
+
+dly_files <- archive("data/ghcnd_all.tar.gz") %>%
+    filter(str_detect(path, "dly")) %>%
+    slice_sample(n = 5) %>%
+    pull(path)
+
 
 ##making composite date from few files
 ##larger files cannot be used in the git hub
-read_fwf(dly_files,
+dly_files %>%
+    map_dfr(., ~read_fwf(archive_read("data/ghcnd_all.tar.gz", .x),
         fwf_widths(widths, headers),
         na = c("NA", "-9999"),
         col_types = cols(.default = col_character()),
-        col_select = c(ID, YEAR, MONTH, ELEMENT, starts_with("VALUE"))) %>%
+        col_select = c(ID, YEAR, MONTH, ELEMENT, starts_with("VALUE")))) 
+        #%>%
     rename_all(tolower) %>%
     filter(element == "PRCP") %>%
     select(-element) %>%
