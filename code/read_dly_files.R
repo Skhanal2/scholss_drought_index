@@ -20,7 +20,7 @@ read_fwf("data/ghcnd_cat.gz",
         na = c("NA", "-9999"),
         col_types = cols(.default = col_character()),
         col_select = c(ID, YEAR, MONTH, ELEMENT, starts_with("VALUE"))) 
-        #%>%
+        %>%
     rename_all(tolower) %>%
     filter(element == "PRCP") %>%
     select(-element) %>%
