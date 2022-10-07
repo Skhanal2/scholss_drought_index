@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/local/bin/bash
 
 #extract file name from archive
 echo "file_name" > data/ghcnd_all_files.txt
