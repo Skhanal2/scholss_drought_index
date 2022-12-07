@@ -1,4 +1,4 @@
-#!/usr/local/bin/env Rscript
+#!/usr/local/bin/Rscript
 
 library(tidyverse)
 library(glue)

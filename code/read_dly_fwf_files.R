@@ -13,7 +13,7 @@ widths
 headers <- c("ID", "YEAR", "MONTH", "ELEMENT", unlist(map(1:31, quadruple)))
 
 read_fwf("data/ghcnd_cat.gz",
-        fwf_widths(widhts, headers),
+        fwf_widths(widths, headers),
         na = c("NA", "-9999"),
         col_types = cols(.default = col_character()),
         col_select = c(ID, YEAR, MONTH, ELEMENT, starts_with("VALUE")))
