@@ -1,8 +1,13 @@
-name: GitHub Actions Demo
-run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+name: Run Drought Index Workflow
+run-name: ${{ github.actor }} is running snakemake workflow 🚀
+on: 
+#push:
+  schedule:
+    - cron: '5 0 * * *'
+    
+    
 jobs:
-  Explore-GitHub-Actions:
+  Run-Drought-Index-Workflow:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -14,5 +19,24 @@ jobs:
       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
       - name: List files in the repository
         run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          ls 
+      - name: Get working directory
+        run: |
+          pwd
+     - name: Snakemake workflow
+        uses: snakemake/snakemake-github-action@v1
+        with:
+          directory: '.'
+          snakefile: 'Snakefile'
+          args: '--cores 1 --use-conda --conda-cleanup-pkgs cache'
+          stagein: '' #additional preliminary commands to run (can be multiple)
+    - name: Configure git on runner
+      run: |
+        git add visuals/world_drought.png index.html
+        git config --local user.name "GitHub"
+    - name: Commit changes to directory
+      run: |
+        git add visuals/world_drought.png index.html
+        git commit -m "New day's rendering"
+        git push original main
+    - run: echo "🍏 This job's status is ${{ job.status }}."
